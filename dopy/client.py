@@ -79,6 +79,14 @@ class Client(object):
 
         return [Size(size_data) for size_data in get_sizes_response.json()["sizes"]]
 
+    def create_domain(self, name, ip_address):
+
+        return Domain.create_new(name, ip_address, self.authentication_token)
+
+    def get_domain(self, domain_name, authentication_token):
+
+        return Domain.from_existing(domain_name, authentication_token)
+
     def get_domains(self):
 
         get_domains_response = utils.get_request("domains", self.authentication_token)
