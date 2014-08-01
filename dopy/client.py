@@ -1,3 +1,4 @@
+from domain_record import DomainRecord
 from droplet import Droplet
 from image import Image
 from key import Key
@@ -59,6 +60,23 @@ class Client(object):
     def get_key(self, key_id):
 
         return Key.from_existing(key_id, self.authentication_token)
+
+    def create_domain_record(self, domain_name, data):
+
+        return DomainRecord.create_new(domain_name, data, self.authentication_token)
+
+    def get_domain_record(self, domain_name, record_id):
+
+        return DomainRecord.from_existing(domain_name, record_id, self.authentication_token)
+
+    def get_domain_records(self, domain_name):
+
+        get_domain_records_response = utils.get_request("domains/{0}/records".format(domain_name), self.authentication_token)
+        if not get_domain_records_response.ok:
+
+            raise Exception("Failed to get domain records! See error message: {0}".format(get_domain_records_response.json["message"]))
+
+        return [DomainRecord(domain_record_data) for domain_record_data in get_domain_records_response.json()["domain_records"]]
 
     def get_regions(self):
 
