@@ -1,3 +1,4 @@
+from domain import Domain
 from domain_record import DomainRecord
 from droplet import Droplet
 from image import Image
@@ -81,7 +82,6 @@ class Client(object):
     def get_regions(self):
 
         get_regions_response = utils.get_request("regions", self.authentication_token)
-
         if not get_regions_response.ok:
 
             raise Exception("Could not get regions! See error message: {0}".format(get_regions_response.json()["message"]))
@@ -91,9 +91,25 @@ class Client(object):
     def get_sizes(self):
 
         get_sizes_response = utils.get_request("sizes", self.authentication_token)
-
         if not get_sizes_response.ok:
 
             raise Exception("Could not get sizes! See error message: {0}".format(get_sizes_response.json()["message"]))
 
         return [Size(size_data) for size_data in get_sizes_response.json()["sizes"]]
+
+    def create_domain(self, name, ip_address):
+
+        return Domain.create_new(name, ip_address, self.authentication_token)
+
+    def get_domain(self, domain_name, authentication_token):
+
+        return Domain.from_existing(domain_name, authentication_token)
+
+    def get_domains(self):
+
+        get_domains_response = utils.get_request("domains", self.authentication_token)
+        if not get_domains_response.ok:
+
+            raise Exception("Could not get domains! See error message: {0}".format(get_domains_response.json()["message"]))
+
+        return [Domain(domain_data) for domain_data in get_domains_response.json()["domains"]]
