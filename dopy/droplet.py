@@ -118,6 +118,7 @@ class Droplet(object):
 
         data = {"type": "rename", "name": name}
         response = self._execute_droplet_action(data)
+        self.name = name
         return Action(response.json()["action"])
 
     def resize(self, size_id):
